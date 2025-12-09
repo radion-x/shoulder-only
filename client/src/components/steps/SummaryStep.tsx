@@ -489,13 +489,13 @@ const SummaryStep: React.FC = () => {
                 {formDataRef.current.painMapImageFront && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Front View</h4>
-                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formDataRef.current.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`/uploads/assessment_files/${formDataRef.current.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
                 {formDataRef.current.painMapImageBack && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Back View</h4>
-                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formDataRef.current.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`/uploads/assessment_files/${formDataRef.current.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
               </div>
