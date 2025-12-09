@@ -23,10 +23,10 @@ const OnboardingStep: React.FC = () => {
       
       <div className="mb-8 pt-6">
         <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-2"> {/* Changed color, increased prominence */}
-          Comprehensive Hip Evaluation
+          Comprehensive Shoulder Evaluation
         </h3>
         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          This evaluation will help us understand your hip health and provide appropriate guidance through a structured process.
+          This evaluation will help us understand your shoulder health and provide appropriate guidance through a structured process.
         </p>
       </div>
 

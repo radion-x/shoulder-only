@@ -5,7 +5,7 @@ import { getApiUrl } from '../../config/api';
 import { FormControl, InputLabel, Select, MenuItem, Checkbox, ListItemText, OutlinedInput, SelectChangeEvent, Theme, useTheme } from '@mui/material';
 
 // Define joint regions for the dropdown
-const JOINT_REGIONS = ['Left Hip', 'Right Hip'];
+const JOINT_REGIONS = ['Left Shoulder', 'Right Shoulder'];
 
 // Define a type for individual upload statuses
 type UploadStatus = {
@@ -87,7 +87,7 @@ const ImagingHistoryStep: React.FC = () => {
       
       <div className="max-w-full">
         <p className="text-slate-700 dark:text-gray-300 mb-6">
-          Please indicate which imaging studies you have had for your hip. For each study, provide the date and location if available.
+          Please indicate which imaging studies you have had for your shoulder. For each study, provide the date and location if available.
         </p>
 
         {/* Desktop version - only show on md screens and above */}

@@ -20,7 +20,7 @@ export interface Imaging {
   date?: string;
   document?: File; // For the file input
   documentName?: string; // To store the path/name of the uploaded file from server
-  jointRegions?: string[]; // Array of selected joint regions (Left Hip, Right Hip)
+  jointRegions?: string[]; // Array of selected joint regions (Left Shoulder, Right Shoulder)
 }
 
 // New interface for a generic red flag item
@@ -130,21 +130,23 @@ export interface FormData {
   // Step 1: Onboarding
   consent: boolean;
 
-  // Step 2: Medical History - Hip Diagnoses
+  // Step 2: Medical History - Shoulder Diagnoses
   diagnoses: {
-    // Hip Diagnoses
-    hipOsteoarthritis: boolean;
-    hipRheumatoidArthritis: boolean;
-    labralTear: boolean;
-    hipDysplasia: boolean;
-    femoroacetabularImpingement: boolean;
-    hipFracture: boolean;
-    trochantericBursitis: boolean;
-    avascularNecrosis: boolean;
-    glutealTendonTear: boolean;
-    snappingHipSyndrome: boolean;
-    otherHipConditionSelected?: boolean;
-    otherHipCondition?: string;
+    // Shoulder Diagnoses
+    shoulderOsteoarthritis: boolean;
+    shoulderRheumatoidArthritis: boolean;
+    rotatorCuffTear: boolean;
+    rotatorCuffTendinitis: boolean;
+    frozenShoulder: boolean;
+    shoulderInstability: boolean;
+    labrumTear: boolean;
+    acJointArthritis: boolean;
+    shoulderImpingement: boolean;
+    shoulderFracture: boolean;
+    calcificTendinitis: boolean;
+    bicepsTendinitis: boolean;
+    otherShoulderConditionSelected?: boolean;
+    otherShoulderCondition?: string;
     // Symptom details
     symptomDuration?: string; 
     symptomProgression?: 'Getting better' | 'Staying the same' | 'Getting worse' | ''; 
@@ -195,23 +197,26 @@ export const initialFormData: FormData = {
   consent: false,
 
   diagnoses: {
-    // Hip Diagnoses
-    hipOsteoarthritis: false,
-    hipRheumatoidArthritis: false,
-    labralTear: false,
-    hipDysplasia: false,
-    femoroacetabularImpingement: false,
-    hipFracture: false,
-    trochantericBursitis: false,
-    avascularNecrosis: false,
-    glutealTendonTear: false,
-    snappingHipSyndrome: false,
-    otherHipConditionSelected: false,
-    otherHipCondition: '',
+    // Shoulder Diagnoses
+    shoulderOsteoarthritis: false,
+    shoulderRheumatoidArthritis: false,
+    rotatorCuffTear: false,
+    rotatorCuffTendinitis: false,
+    frozenShoulder: false,
+    shoulderInstability: false,
+    labrumTear: false,
+    acJointArthritis: false,
+    shoulderImpingement: false,
+    shoulderFracture: false,
+    calcificTendinitis: false,
+    bicepsTendinitis: false,
+    otherShoulderConditionSelected: false,
+    otherShoulderCondition: '',
     // Symptom details
     symptomDuration: '',
     symptomProgression: '',
     mainSymptoms: '',
+  },
   },
 
   treatments: {
@@ -244,8 +249,9 @@ export const initialFormData: FormData = {
     weakness: { 
       present: false, 
       areas: {
-        'Hip': { selected: false },
-        'Thigh': { selected: false },
+        'Shoulder': { selected: false },
+        'Arm': { selected: false },
+        'Hand': { selected: false },
         'OtherArea': { selected: false },
       } 
     },

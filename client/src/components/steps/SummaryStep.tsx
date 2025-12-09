@@ -525,18 +525,20 @@ const SummaryStep: React.FC = () => {
             <div className={cardContentBaseClass}>
               {(Object.values(formDataRef.current.diagnoses).some(val => val === true || (typeof val === 'string' && val.length > 0))) ? (
                 <ul className="list-disc list-inside space-y-1">
-                  {/* Hip Diagnoses */}
-                  {formDataRef.current.diagnoses.hipOsteoarthritis && <li className={listItemBaseClass}>Hip Osteoarthritis</li>}
-                  {formDataRef.current.diagnoses.hipRheumatoidArthritis && <li className={listItemBaseClass}>Hip Rheumatoid Arthritis</li>}
-                  {formDataRef.current.diagnoses.labralTear && <li className={listItemBaseClass}>Labral Tear</li>}
-                  {formDataRef.current.diagnoses.hipDysplasia && <li className={listItemBaseClass}>Hip Dysplasia</li>}
-                  {formDataRef.current.diagnoses.femoroacetabularImpingement && <li className={listItemBaseClass}>Femoroacetabular Impingement (FAI)</li>}
-                  {formDataRef.current.diagnoses.hipFracture && <li className={listItemBaseClass}>Hip Fracture</li>}
-                  {formDataRef.current.diagnoses.trochantericBursitis && <li className={listItemBaseClass}>Trochanteric Bursitis</li>}
-                  {formDataRef.current.diagnoses.avascularNecrosis && <li className={listItemBaseClass}>Avascular Necrosis (AVN)</li>}
-                  {formDataRef.current.diagnoses.glutealTendonTear && <li className={listItemBaseClass}>Gluteal Tendon Tear / Tendinopathy</li>}
-                  {formDataRef.current.diagnoses.snappingHipSyndrome && <li className={listItemBaseClass}>Snapping Hip Syndrome</li>}
-                  {formDataRef.current.diagnoses.otherHipConditionSelected && formDataRef.current.diagnoses.otherHipCondition && <li className={listItemBaseClass}>Other Hip Condition: {formDataRef.current.diagnoses.otherHipCondition}</li>}
+                  {/* Shoulder Diagnoses */}
+                  {formDataRef.current.diagnoses.shoulderOsteoarthritis && <li className={listItemBaseClass}>Shoulder Osteoarthritis</li>}
+                  {formDataRef.current.diagnoses.shoulderRheumatoidArthritis && <li className={listItemBaseClass}>Shoulder Rheumatoid Arthritis</li>}
+                  {formDataRef.current.diagnoses.rotatorCuffTear && <li className={listItemBaseClass}>Rotator Cuff Tear</li>}
+                  {formDataRef.current.diagnoses.rotatorCuffTendinitis && <li className={listItemBaseClass}>Rotator Cuff Tendinitis</li>}
+                  {formDataRef.current.diagnoses.frozenShoulder && <li className={listItemBaseClass}>Frozen Shoulder (Adhesive Capsulitis)</li>}
+                  {formDataRef.current.diagnoses.shoulderInstability && <li className={listItemBaseClass}>Shoulder Instability / Dislocation</li>}
+                  {formDataRef.current.diagnoses.labrumTear && <li className={listItemBaseClass}>Labrum Tear (SLAP Lesion)</li>}
+                  {formDataRef.current.diagnoses.acJointArthritis && <li className={listItemBaseClass}>AC Joint Arthritis</li>}
+                  {formDataRef.current.diagnoses.shoulderImpingement && <li className={listItemBaseClass}>Shoulder Impingement Syndrome</li>}
+                  {formDataRef.current.diagnoses.shoulderFracture && <li className={listItemBaseClass}>Shoulder Fracture</li>}
+                  {formDataRef.current.diagnoses.calcificTendinitis && <li className={listItemBaseClass}>Calcific Tendinitis</li>}
+                  {formDataRef.current.diagnoses.bicepsTendinitis && <li className={listItemBaseClass}>Biceps Tendinitis</li>}
+                  {formDataRef.current.diagnoses.otherShoulderConditionSelected && formDataRef.current.diagnoses.otherShoulderCondition && <li className={listItemBaseClass}>Other Shoulder Condition: {formDataRef.current.diagnoses.otherShoulderCondition}</li>}
                   
                   {/* Symptom Details */}
                   {formDataRef.current.diagnoses.mainSymptoms && <li className={`${listItemBaseClass} mt-2`}><span className="font-medium">Main Symptoms:</span> {formDataRef.current.diagnoses.mainSymptoms}</li>}
@@ -565,7 +567,7 @@ const SummaryStep: React.FC = () => {
                 ) : ( <p>No non-surgical treatments reported.</p> )}
               </div>
               <div>
-                <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Hip Surgery History:</h4>
+                <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Shoulder Surgery History:</h4>
                 {formDataRef.current.hadSurgery && formDataRef.current.surgeries.length > 0 ? (
                   <ul className="list-disc list-inside space-y-1">
                     {formDataRef.current.surgeries.map((surgery, index) => (<li key={index} className={listItemBaseClass}> {surgery.procedure} ({formatDate(surgery.date)})</li>))}

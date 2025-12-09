@@ -1,6 +1,6 @@
-# Spine IQ Assessment Tool
+# Shoulder IQ Assessment Tool
 
-Spine IQ is a comprehensive web application designed to streamline the patient assessment process for spinal conditions. It features a detailed, multi-step patient intake form, a secure dashboard for doctors to review patient data, and leverages AI to generate clinical summaries.
+Shoulder IQ is a comprehensive web application designed to streamline the patient assessment process for shoulder conditions. It features a detailed, multi-step patient intake form, a secure dashboard for doctors to review patient data, and leverages AI to generate clinical summaries.
 
 ## Features
 

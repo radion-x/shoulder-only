@@ -221,10 +221,10 @@ const TreatmentHistoryStep: React.FC = () => {
         </section>
 
         <section className="pt-4 border-t border-slate-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-4">Hip Surgery History</h3>
+          <h3 className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-4">Shoulder Surgery History</h3>
           
           <div className="mb-4">
-            <p className="text-slate-700 dark:text-gray-300 mb-3">Have you had previous surgery on your hip?</p>
+            <p className="text-slate-700 dark:text-gray-300 mb-3">Have you had previous surgery on your shoulder?</p>
             
             <div className="flex space-x-4">
               <label className="inline-flex items-center">

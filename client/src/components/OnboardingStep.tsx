@@ -13,10 +13,10 @@ const OnboardingStep: React.FC = () => {
     <div className="step-container">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-[#131313] dark:text-white mb-4">
-          Welcome to Your Hip Evaluation
+          Welcome to Your Shoulder Evaluation
         </h2>
         <p className="text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
-          Let's work together to understand your hip health and create a personalized care pathway.
+          Let's work together to understand your shoulder health and create a personalized care pathway.
         </p>
       </div>
 
@@ -59,7 +59,7 @@ const OnboardingStep: React.FC = () => {
           </h3>
           
           <p className="text-neutral-700 dark:text-neutral-300 mb-6">
-            This evaluation will take approximately 10-15 minutes to complete. Your responses will help us understand your condition and provide appropriate guidance for your hip health journey.
+            This evaluation will take approximately 10-15 minutes to complete. Your responses will help us understand your condition and provide appropriate guidance for your shoulder health journey.
           </p>
 
           <div className="bg-white dark:bg-gray-700 rounded-lg p-6 border border-neutral-200 dark:border-gray-600">

@@ -1,8 +1,8 @@
-# Hip IQ Assessment Tool - Copilot Instructions
+# Shoulder IQ Assessment Tool - Copilot Instructions
 
 ## Architecture Overview
 
-This is a full-stack medical assessment application with a React/TypeScript frontend and Node.js/Express backend for hip condition evaluations.
+This is a full-stack medical assessment application with a React/TypeScript frontend and Node.js/Express backend for shoulder condition evaluations.
 
 **Frontend:** `/client/` - React 18 + TypeScript + Vite + Tailwind CSS  
 **Backend:** `/server/` - Node.js + Express + MongoDB + Anthropic Claude API  
@@ -55,7 +55,7 @@ const claudeResponse = await anthropic.messages.create({
   painMapImages: [String],  // Array of file paths
   imaging: [{
     documentName: String,   // File path reference
-    spinalRegions: [String] // Multi-select from frontend
+    jointRegions: [String]  // Multi-select from frontend (Left Shoulder, Right Shoulder)
   }]
 }
 ```
@@ -85,7 +85,7 @@ cd client && npm run build       # Generates dist/ folder
 ### Conditional Fields
 - **Referring Doctor:** Shows additional fields only if "Yes" selected
 - **Surgery History:** Dynamic surgery entry forms
-- **Imaging Studies:** Per-type conditional file uploads with spinal region selection
+- **Imaging Studies:** Per-type conditional file uploads with joint region selection (Left Shoulder, Right Shoulder)
 
 ### Validation Logic
 - Required fields enforced before step navigation

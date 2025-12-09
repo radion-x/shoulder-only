@@ -501,9 +501,9 @@ app.post('/api/email/send-assessment', async (req, res) => {
     const adminHtmlContent = generateAssessmentEmailHTML({ formData, aiSummary, recommendationText: formData.systemRecommendation, nextStep: formData.nextStep }, serverBaseUrl, 'admin');
     
     const adminMessageData = {
-      from: `Hip IQ Assessment <${process.env.EMAIL_SENDER_ADDRESS}>`,
+      from: `Shoulder IQ Assessment <${process.env.EMAIL_SENDER_ADDRESS}>`,
       to: [primaryRecipient],
-      subject: `Hip Assessment Summary - ${formData.demographics?.fullName || 'N/A'} - ${subjectDate}`,
+      subject: `Shoulder Assessment Summary - ${formData.demographics?.fullName || 'N/A'} - ${subjectDate}`,
       html: adminHtmlContent,
     };
     
@@ -526,9 +526,9 @@ app.post('/api/email/send-assessment', async (req, res) => {
       const patientHtmlContent = generateAssessmentEmailHTML({ formData, aiSummary, recommendationText: formData.systemRecommendation, nextStep: formData.nextStep }, serverBaseUrl, 'patient');
       
       const patientMessageData = {
-        from: `Hip IQ Assessment <${process.env.EMAIL_SENDER_ADDRESS}>`,
+        from: `Shoulder IQ Assessment <${process.env.EMAIL_SENDER_ADDRESS}>`,
         to: [patientEmail],
-        subject: `Your Hip Assessment Summary - ${subjectDate}`,
+        subject: `Your Shoulder Assessment Summary - ${subjectDate}`,
         html: patientHtmlContent,
       };
       
@@ -588,7 +588,7 @@ function generateAssessmentEmailHTML(data, serverBaseUrl, recipientType) {
         </style>
       </head>
       <body>
-        <h1>Hip Assessment Report</h1>
+        <h1>Shoulder Assessment Report</h1>
   `;
 
   if (recipientType === 'patient') {

@@ -13,12 +13,12 @@ function generateComprehensivePrompt(formData) {
     }
 
     let comprehensivePrompt = `
-Analyze the following patient-provided hip evaluation data and generate a concise clinical summary.
+Analyze the following patient-provided shoulder evaluation data and generate a concise clinical summary.
 The patient's name is ${formData.demographics?.fullName || 'Not provided'} and their calculated age is ${patientAge} years.
 Consider all provided information, including age, symptoms, medical history, red flags, and treatment goals, to tailor the summary and any potential diagnostic considerations or observations.
 Focus on:
 - Key symptoms and their characteristics (location, nature, timing).
-- Relevant medical history (hip diagnoses, surgeries, treatments), including specific details for "other" conditions, main symptoms, symptom duration, and progression.
+- Relevant medical history (shoulder diagnoses, surgeries, treatments), including specific details for "other" conditions, main symptoms, symptom duration, and progression.
 - Interpretation of pain point data (locations, intensities).
 - Patient's stated goals for treatment.
 - Specific red flag symptoms reported, including all details.
@@ -37,24 +37,26 @@ Treatment Goals: ${formData.treatmentGoals || 'Not provided'}
     if (formData.diagnoses) {
         comprehensivePrompt += "\nMedical History & Symptoms:\n";
         
-        // Hip Diagnoses
-        let hipConditions = [];
-        if (formData.diagnoses.hipOsteoarthritis) hipConditions.push("Hip Osteoarthritis");
-        if (formData.diagnoses.hipRheumatoidArthritis) hipConditions.push("Hip Rheumatoid Arthritis");
-        if (formData.diagnoses.labralTear) hipConditions.push("Labral Tear");
-        if (formData.diagnoses.hipDysplasia) hipConditions.push("Hip Dysplasia");
-        if (formData.diagnoses.femoroacetabularImpingement) hipConditions.push("Femoroacetabular Impingement (FAI)");
-        if (formData.diagnoses.hipFracture) hipConditions.push("Hip Fracture");
-        if (formData.diagnoses.trochantericBursitis) hipConditions.push("Trochanteric Bursitis");
-        if (formData.diagnoses.avascularNecrosis) hipConditions.push("Avascular Necrosis (AVN)");
-        if (formData.diagnoses.glutealTendonTear) hipConditions.push("Gluteal Tendon Tear / Tendinopathy");
-        if (formData.diagnoses.snappingHipSyndrome) hipConditions.push("Snapping Hip Syndrome");
-        if (formData.diagnoses.otherHipConditionSelected && formData.diagnoses.otherHipCondition) {
-            hipConditions.push(`Other Hip Condition: ${formData.diagnoses.otherHipCondition}`);
+        // Shoulder Diagnoses
+        let shoulderConditions = [];
+        if (formData.diagnoses.shoulderOsteoarthritis) shoulderConditions.push("Shoulder Osteoarthritis");
+        if (formData.diagnoses.shoulderRheumatoidArthritis) shoulderConditions.push("Shoulder Rheumatoid Arthritis");
+        if (formData.diagnoses.rotatorCuffTear) shoulderConditions.push("Rotator Cuff Tear");
+        if (formData.diagnoses.rotatorCuffTendinitis) shoulderConditions.push("Rotator Cuff Tendinitis");
+        if (formData.diagnoses.frozenShoulder) shoulderConditions.push("Frozen Shoulder (Adhesive Capsulitis)");
+        if (formData.diagnoses.shoulderInstability) shoulderConditions.push("Shoulder Instability / Dislocation");
+        if (formData.diagnoses.labrumTear) shoulderConditions.push("Labrum Tear (SLAP Lesion)");
+        if (formData.diagnoses.acJointArthritis) shoulderConditions.push("AC Joint Arthritis");
+        if (formData.diagnoses.shoulderImpingement) shoulderConditions.push("Shoulder Impingement Syndrome");
+        if (formData.diagnoses.shoulderFracture) shoulderConditions.push("Shoulder Fracture");
+        if (formData.diagnoses.calcificTendinitis) shoulderConditions.push("Calcific Tendinitis");
+        if (formData.diagnoses.bicepsTendinitis) shoulderConditions.push("Biceps Tendinitis");
+        if (formData.diagnoses.otherShoulderConditionSelected && formData.diagnoses.otherShoulderCondition) {
+            shoulderConditions.push(`Other Shoulder Condition: ${formData.diagnoses.otherShoulderCondition}`);
         }
 
-        if (hipConditions.length > 0) {
-            comprehensivePrompt += `Hip Diagnoses: ${hipConditions.join(', ')}\n`;
+        if (shoulderConditions.length > 0) {
+            comprehensivePrompt += `Shoulder Diagnoses: ${shoulderConditions.join(', ')}\n`;
         }
         if (formData.diagnoses.mainSymptoms) {
             comprehensivePrompt += `Main Symptoms: ${formData.diagnoses.mainSymptoms}\n`;
@@ -148,12 +150,12 @@ Treatment Goals: ${formData.treatmentGoals || 'Not provided'}
     }
 
     if (formData.surgeries && formData.surgeries.length > 0 && formData.hadSurgery) {
-        comprehensivePrompt += "\nHip Surgical History:\n";
+        comprehensivePrompt += "\nShoulder Surgical History:\n";
         formData.surgeries.forEach(surgery => {
             comprehensivePrompt += `- Procedure: ${surgery.procedure || 'N/A'}, Date: ${surgery.date || 'N/A'}, Surgeon: ${surgery.surgeon || 'N/A'}, Hospital: ${surgery.hospital || 'N/A'}\n`;
         });
     } else if (formData.hadSurgery === false) {
-        comprehensivePrompt += "\nHip Surgical History: No surgical history reported.\n";
+        comprehensivePrompt += "\nShoulder Surgical History: No surgical history reported.\n";
     }
 
     if (formData.imaging && formData.imaging.some(img => img.hadStudy)) {

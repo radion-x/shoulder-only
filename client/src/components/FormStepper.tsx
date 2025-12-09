@@ -43,7 +43,7 @@ const FormStepper: React.FC = () => {
     <div>
       {currentStep === 1 && (
         <header className="mb-8 text-center pt-8"> {/* Reduced padding-top and margin-bottom */}
-          <h1 className="text-6xl font-bold mb-2 text-gray-900 dark:text-white">Hip IQ</h1> {/* Reduced margin-bottom */}
+          <h1 className="text-6xl font-bold mb-2 text-gray-900 dark:text-white">Shoulder IQ</h1> {/* Reduced margin-bottom */}
           <p className="text-2xl font-light text-gray-700 dark:text-neutral-300">Intelligent Care for Movement</p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">by Dr. Andrew Fraval</p>
         </header>

@@ -12,9 +12,9 @@ const ClinicalHistoryStep: React.FC = () => {
       ...formData.diagnoses,
       [diagnosisKey]: value,
     };
-    // If 'Other Hip' is being set to No, clear the text field
-    if (diagnosisKey === 'otherHipConditionSelected' && !value) {
-      newDiagnoses.otherHipCondition = '';
+    // If 'Other Shoulder' is being set to No, clear the text field
+    if (diagnosisKey === 'otherShoulderConditionSelected' && !value) {
+      newDiagnoses.otherShoulderCondition = '';
     }
     updateFormData({ diagnoses: newDiagnoses });
   };
@@ -48,7 +48,7 @@ const ClinicalHistoryStep: React.FC = () => {
     });
   };
 
-  const handleOtherTextChange = (field: 'otherHipCondition', value: string) => {
+  const handleOtherTextChange = (field: 'otherShoulderCondition', value: string) => {
     updateFormData({
       diagnoses: {
         ...formData.diagnoses,
@@ -57,19 +57,21 @@ const ClinicalHistoryStep: React.FC = () => {
     });
   };
 
-  // Hip Diagnoses
-  const hipConditions = [
-    { id: 'hipOsteoarthritis', label: 'Hip Osteoarthritis' },
-    { id: 'hipRheumatoidArthritis', label: 'Rheumatoid Arthritis' },
-    { id: 'labralTear', label: 'Labral Tear' },
-    { id: 'hipDysplasia', label: 'Hip Dysplasia' },
-    { id: 'femoroacetabularImpingement', label: 'Femoroacetabular Impingement (FAI)' },
-    { id: 'hipFracture', label: 'Hip Fracture' },
-    { id: 'trochantericBursitis', label: 'Trochanteric Bursitis' },
-    { id: 'avascularNecrosis', label: 'Avascular Necrosis (AVN)' },
-    { id: 'glutealTendonTear', label: 'Gluteal Tendon Tear / Tendinopathy' },
-    { id: 'snappingHipSyndrome', label: 'Snapping Hip Syndrome' },
-    { id: 'otherHipConditionSelected', label: 'Other Hip Condition' },
+  // Shoulder Diagnoses
+  const shoulderConditions = [
+    { id: 'shoulderOsteoarthritis', label: 'Shoulder Osteoarthritis' },
+    { id: 'shoulderRheumatoidArthritis', label: 'Rheumatoid Arthritis' },
+    { id: 'rotatorCuffTear', label: 'Rotator Cuff Tear' },
+    { id: 'rotatorCuffTendinitis', label: 'Rotator Cuff Tendinitis' },
+    { id: 'frozenShoulder', label: 'Frozen Shoulder (Adhesive Capsulitis)' },
+    { id: 'shoulderInstability', label: 'Shoulder Instability / Dislocation' },
+    { id: 'labrumTear', label: 'Labrum Tear (SLAP Lesion)' },
+    { id: 'acJointArthritis', label: 'AC Joint Arthritis' },
+    { id: 'shoulderImpingement', label: 'Shoulder Impingement Syndrome' },
+    { id: 'shoulderFracture', label: 'Shoulder Fracture' },
+    { id: 'calcificTendinitis', label: 'Calcific Tendinitis' },
+    { id: 'bicepsTendinitis', label: 'Biceps Tendinitis' },
+    { id: 'otherShoulderConditionSelected', label: 'Other Shoulder Condition' },
   ];
 
   const renderConditionItem = (condition: { id: string; label: string }) => {
@@ -104,18 +106,18 @@ const ClinicalHistoryStep: React.FC = () => {
           </div>
         </div>
         
-        {/* Show text area for "Other Hip Condition" */}
-        {condition.id === 'otherHipConditionSelected' && formData.diagnoses.otherHipConditionSelected && (
+        {/* Show text area for "Other Shoulder Condition" */}
+        {condition.id === 'otherShoulderConditionSelected' && formData.diagnoses.otherShoulderConditionSelected && (
           <div className="mt-2 mb-4 pl-4">
-            <label htmlFor="otherHipConditionText" className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
-              Please specify other hip condition(s):
+            <label htmlFor="otherShoulderConditionText" className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
+              Please specify other shoulder condition(s):
             </label>
             <textarea
-              id="otherHipConditionText"
+              id="otherShoulderConditionText"
               className="w-full h-20 px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Describe other hip conditions here..."
-              value={formData.diagnoses.otherHipCondition || ''}
-              onChange={(e) => handleOtherTextChange('otherHipCondition', e.target.value)}
+              placeholder="Describe other shoulder conditions here..."
+              value={formData.diagnoses.otherShoulderCondition || ''}
+              onChange={(e) => handleOtherTextChange('otherShoulderCondition', e.target.value)}
             />
           </div>
         )}
@@ -132,11 +134,11 @@ const ClinicalHistoryStep: React.FC = () => {
           Have you been diagnosed with any of the following conditions? Select all that apply.
         </p>
 
-        {/* Hip Diagnoses Section */}
+        {/* Shoulder Diagnoses Section */}
         <div className="mt-6">
-          <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-4">Hip Diagnoses</h3>
+          <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-4">Shoulder Diagnoses</h3>
           <div className="space-y-4">
-            {hipConditions.map((condition) => renderConditionItem(condition))}
+            {shoulderConditions.map((condition) => renderConditionItem(condition))}
           </div>
         </div>
 
@@ -151,7 +153,7 @@ const ClinicalHistoryStep: React.FC = () => {
             <textarea
               id="mainSymptoms"
               className="w-full h-24 px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., hip pain, groin pain, difficulty walking, stiffness, clicking, catching..."
+              placeholder="e.g., shoulder pain, arm weakness, difficulty reaching overhead, stiffness, clicking, catching..."
               value={formData.diagnoses.mainSymptoms || ''}
               onChange={handleMainSymptomsChange}
             />
