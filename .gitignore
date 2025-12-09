@@ -44,5 +44,8 @@ Thumbs.db
 # Uploads
 server/public/uploads/
 
+# Symlinked directories
+knee_hip
+
 # Git
 .git/
