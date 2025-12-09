@@ -285,7 +285,7 @@ export const initialFormData: FormData = {
     },
     medicareRefNum: '', // Initialize new field
   },
-  formSessionId: `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+  formSessionId: '', // Session ID is managed by FormContext, not here
   painMapImageFront: '',
   painMapImageBack: '',
   nextStep: '',
