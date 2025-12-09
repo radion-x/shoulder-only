@@ -87,6 +87,14 @@ const SummaryStep: React.FC = () => {
   useEffect(() => {
     formDataRef.current = formData;
     contextAiSummaryRef.current = contextAiSummary;
+    // Debug: Log pain map image paths
+    if (formData.painMapImageFront || formData.painMapImageBack) {
+      console.log('[SummaryStep] Pain map paths updated:');
+      console.log('  Front:', formData.painMapImageFront);
+      console.log('  Back:', formData.painMapImageBack);
+      console.log('  Full front URL:', formData.painMapImageFront ? `/uploads/assessment_files/${formData.painMapImageFront}` : 'N/A');
+      console.log('  Full back URL:', formData.painMapImageBack ? `/uploads/assessment_files/${formData.painMapImageBack}` : 'N/A');
+    }
   }, [formData, contextAiSummary, theme]);
 
   const handleFinalSubmit = useCallback(async (isUserInitiated = false) => {
@@ -482,20 +490,20 @@ const SummaryStep: React.FC = () => {
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          { (formDataRef.current.painMapImageFront || formDataRef.current.painMapImageBack) && (
+          { (formData.painMapImageFront || formData.painMapImageBack) && (
             <div className={`${cardBaseClass} md:col-span-2`}>
               <div className={cardHeaderBaseClass}><h3 className={cardTitleBaseClass}>Pain Map Images</h3></div>
               <div className={`${cardContentBaseClass} flex flex-col md:flex-row justify-around items-center gap-4`}>
-                {formDataRef.current.painMapImageFront && (
+                {formData.painMapImageFront && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Front View</h4>
-                    <img src={`/uploads/assessment_files/${formDataRef.current.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`/uploads/assessment_files/${formData.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
-                {formDataRef.current.painMapImageBack && (
+                {formData.painMapImageBack && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Back View</h4>
-                    <img src={`/uploads/assessment_files/${formDataRef.current.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`/uploads/assessment_files/${formData.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
               </div>

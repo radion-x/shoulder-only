@@ -72,19 +72,33 @@ router.post('/pain-map', async (req, res) => {
     const sanitizedSessionId = formSessionId.replace(/[^a-zA-Z0-9_-]/g, '');
     const finalSessionDir = path.join(baseAssessmentFilesDir, sanitizedSessionId);
 
+    console.log(`[Pain Map Upload] Session: ${sanitizedSessionId}, View: ${view}`);
+    console.log(`[Pain Map Upload] Directory: ${finalSessionDir}`);
+
     if (!fs.existsSync(finalSessionDir)) {
       fs.mkdirSync(finalSessionDir, { recursive: true });
+      console.log(`[Pain Map Upload] Created directory: ${finalSessionDir}`);
     }
 
     const filename = `pain-map-${view}-${Date.now()}.png`;
     const finalPath = path.join(finalSessionDir, filename);
     
     fs.writeFileSync(finalPath, base64Data, 'base64');
+    
+    // Verify file was written
+    if (fs.existsSync(finalPath)) {
+      const stats = fs.statSync(finalPath);
+      console.log(`[Pain Map Upload] File saved: ${finalPath}, Size: ${stats.size} bytes`);
+    } else {
+      console.error(`[Pain Map Upload] ERROR: File not found after write: ${finalPath}`);
+    }
 
     let relativeFilePath = path.join(sanitizedSessionId, filename);
     if (path.sep === '\\') {
       relativeFilePath = relativeFilePath.replace(/\\/g, '/');
     }
+
+    console.log(`[Pain Map Upload] Returning path: ${relativeFilePath}`);
 
     res.status(200).json({
       message: 'Pain map uploaded successfully',
