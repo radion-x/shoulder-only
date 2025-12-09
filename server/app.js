@@ -265,19 +265,35 @@ app.post('/api/upload/pain-map', async (req, res) => {
     const sanitizedSessionId = formSessionId.replace(/[^a-zA-Z0-9_-]/g, '');
     const finalSessionDir = path.join(baseAssessmentFilesDir, sanitizedSessionId);
 
+    console.log(`[Pain Map Upload] Session: ${sanitizedSessionId}, View: ${view}`);
+    console.log(`[Pain Map Upload] Directory: ${finalSessionDir}`);
+
     if (!fs.existsSync(finalSessionDir)) {
       fs.mkdirSync(finalSessionDir, { recursive: true });
+      console.log(`[Pain Map Upload] Created directory: ${finalSessionDir}`);
     }
 
     const filename = `pain-map-${view}-${Date.now()}.png`;
     const finalPath = path.join(finalSessionDir, filename);
     
+    // Write file synchronously
     fs.writeFileSync(finalPath, base64Data, 'base64');
+    
+    // Force file system sync to ensure data is flushed to disk
+    const fd = fs.openSync(finalPath, 'r');
+    fs.fsyncSync(fd);
+    fs.closeSync(fd);
+    
+    // Verify file exists and get size
+    const stats = fs.statSync(finalPath);
+    console.log(`[Pain Map Upload] File saved and synced: ${finalPath}, Size: ${stats.size} bytes`);
 
     let relativeFilePath = path.join(sanitizedSessionId, filename);
     if (path.sep === '\\') {
       relativeFilePath = relativeFilePath.replace(/\\/g, '/');
     }
+
+    console.log(`[Pain Map Upload] Returning path: ${relativeFilePath}`);
 
     res.status(200).json({
       message: 'Pain map uploaded successfully',
