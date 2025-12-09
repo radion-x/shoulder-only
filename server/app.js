@@ -42,17 +42,13 @@ if (!mongoUri) {
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 
-// Trust proxy - required when behind nginx/Coolify reverse proxy
-app.set('trust proxy', 1);
-
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: 'auto', // auto-detect based on connection (respects X-Forwarded-Proto)
+    secure: false, // Set to false since we're behind nginx proxy
     httpOnly: true,
-    sameSite: 'lax', // 'lax' works for same-site navigation
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
