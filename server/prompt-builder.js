@@ -16,6 +16,9 @@ function generateComprehensivePrompt(formData) {
 Analyze the following patient-provided shoulder evaluation data and generate a concise clinical summary.
 The patient's name is ${formData.demographics?.fullName || 'Not provided'} and their calculated age is ${patientAge} years.
 Consider all provided information, including age, symptoms, medical history, red flags, and treatment goals, to tailor the summary and any potential diagnostic considerations or observations.
+
+IMPORTANT: This is a SHOULDER-ONLY evaluation. Do NOT mention hip, knee, spine, or any other body parts unless they are explicitly mentioned in the patient's pain areas. Focus exclusively on shoulder-related conditions and terminology.
+
 Focus on:
 - Key symptoms and their characteristics (location, nature, timing).
 - Relevant medical history (shoulder diagnoses, surgeries, treatments), including specific details for "other" conditions, main symptoms, symptom duration, and progression.
@@ -24,7 +27,7 @@ Focus on:
 - Specific red flag symptoms reported, including all details.
 Highlight potential red flags or areas needing further investigation based ONLY on the provided data, considering the patient's age and overall clinical picture.
 Maintain an objective, structured, and professional tone. Do not provide medical advice or diagnoses not directly derivable from the input. It is imperative that the word "recommendation" or its variations are not used in the summary.
-The summary should be suitable for a medical professional to quickly understand the patient's situation.
+The summary should be suitable for a medical professional to quickly understand the patient's shoulder condition.
 
 Patient Data:
 Full Name: ${formData.demographics?.fullName || 'Not provided'}

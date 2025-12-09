@@ -482,20 +482,20 @@ const SummaryStep: React.FC = () => {
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          { (formData.painMapImageFront || formData.painMapImageBack) && (
+          { (formDataRef.current.painMapImageFront || formDataRef.current.painMapImageBack) && (
             <div className={`${cardBaseClass} md:col-span-2`}>
               <div className={cardHeaderBaseClass}><h3 className={cardTitleBaseClass}>Pain Map Images</h3></div>
               <div className={`${cardContentBaseClass} flex flex-col md:flex-row justify-around items-center gap-4`}>
-                {formData.painMapImageFront && (
+                {formDataRef.current.painMapImageFront && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Front View</h4>
-                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formDataRef.current.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
-                {formData.painMapImageBack && (
+                {formDataRef.current.painMapImageBack && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Back View</h4>
-                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formDataRef.current.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
               </div>
