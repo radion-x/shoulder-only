@@ -217,7 +217,6 @@ export const initialFormData: FormData = {
     symptomProgression: '',
     mainSymptoms: '',
   },
-  },
 
   treatments: {
     overTheCounterMedication: false,
