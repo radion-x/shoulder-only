@@ -32,7 +32,6 @@ services:
       - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD}
       - SESSION_SECRET=${SESSION_SECRET}
       - SERVER_BASE_URL=${SERVER_BASE_URL}
-      - NODE_ENV=production
     volumes:
       - uploads-data:/app/public/uploads
     networks:
