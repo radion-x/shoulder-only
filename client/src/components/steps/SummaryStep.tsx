@@ -92,8 +92,9 @@ const SummaryStep: React.FC = () => {
       console.log('[SummaryStep] Pain map paths updated:');
       console.log('  Front:', formData.painMapImageFront);
       console.log('  Back:', formData.painMapImageBack);
-      console.log('  Full front URL:', formData.painMapImageFront ? `/uploads/assessment_files/${formData.painMapImageFront}` : 'N/A');
-      console.log('  Full back URL:', formData.painMapImageBack ? `/uploads/assessment_files/${formData.painMapImageBack}` : 'N/A');
+      console.log('  VITE_SERVER_BASE_URL:', import.meta.env.VITE_SERVER_BASE_URL);
+      console.log('  Full front URL:', formData.painMapImageFront ? `${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageFront}` : 'N/A');
+      console.log('  Full back URL:', formData.painMapImageBack ? `${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageBack}` : 'N/A');
     }
   }, [formData, contextAiSummary, theme]);
 
@@ -497,13 +498,13 @@ const SummaryStep: React.FC = () => {
                 {formData.painMapImageFront && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Front View</h4>
-                    <img src={`/uploads/assessment_files/${formData.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
                 {formData.painMapImageBack && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Back View</h4>
-                    <img src={`/uploads/assessment_files/${formData.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
+                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
               </div>
