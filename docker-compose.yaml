@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # React Frontend (Nginx)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    expose:
+      - "80"
+    depends_on:
+      - server
+    networks:
+      - coolify
+
+  # Node.js Backend (Express)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    expose:
+      - "3889"
+    environment:
+      - SERVER_PORT=3889
+      - MONGODB_URI=${MONGODB_URI}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - MAILGUN_API_KEY=${MAILGUN_API_KEY}
+      - MAILGUN_DOMAIN=${MAILGUN_DOMAIN}
+      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
+      - EMAIL_RECIPIENT_ADDRESS=${EMAIL_RECIPIENT_ADDRESS}
+      - BCC_EMAIL_RECIPIENT_ADDRESS=${BCC_EMAIL_RECIPIENT_ADDRESS}
+      - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - SERVER_BASE_URL=${SERVER_BASE_URL}
+      - NODE_ENV=production
+    volumes:
+      - uploads-data:/app/public/uploads
+    networks:
+      - coolify
+
+networks:
+  coolify:
+    external: true
+
+volumes:
+  uploads-data:
