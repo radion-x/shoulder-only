@@ -50,13 +50,17 @@ app.use(express.json({ limit: '5mb' }));
 // Trust proxy - required when behind nginx/Traefik/Cloudflare
 app.set('trust proxy', 1);
 
+const sessionSecret = process.env.SESSION_SECRET || 'fallback_secret_key_please_change';
+console.log('[Session Config] Using secret:', sessionSecret.substring(0, 10) + '...');
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
+  secret: sessionSecret,
   resave: true,
   saveUninitialized: true,
   proxy: true,
+  name: 'connect.sid',  // Explicitly set cookie name
   cookie: {
-    secure: false,  // TESTING: Disable secure to debug cookie issue
+    secure: false,
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
@@ -68,6 +72,12 @@ app.use(session({
 app.use((req, res, next) => {
   console.log(`[Session Debug] ${req.method} ${req.path} - SessionID: ${req.sessionID}`);
   console.log(`[Session Debug] Cookie header: ${req.headers.cookie}`);
+  // Log raw session from cookie
+  const cookieHeader = req.headers.cookie || '';
+  const sidMatch = cookieHeader.match(/connect\.sid=s%3A([^.]+)/);
+  if (sidMatch) {
+    console.log(`[Session Debug] Cookie session ID (decoded): ${sidMatch[1]}`);
+  }
   next();
 });
 
