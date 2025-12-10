@@ -47,8 +47,12 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '5mb' }));
+// Log the session secret (first 10 chars only for security)
+const sessionSecret = process.env.SESSION_SECRET || 'fallback_secret_key_please_change';
+console.log('[Config] Session secret starts with:', sessionSecret.substring(0, 10), '... length:', sessionSecret.length);
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
