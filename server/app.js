@@ -13,6 +13,8 @@ const Mailgun = require('mailgun.js');
 const { generateComprehensivePrompt } = require('./prompt-builder.js');
 require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 
+console.log('=== SERVER CODE VERSION: 2024-12-10-v2 ===');
+
 const app = express();
 
 // --- DIRECTORY SETUP ---
