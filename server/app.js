@@ -67,7 +67,14 @@ app.use(session({
 // Debug middleware to log session state on every request
 app.use((req, res, next) => {
   console.log(`[Session Debug] ${req.method} ${req.path} - SessionID: ${req.sessionID}`);
+  console.log(`[Session Debug] Cookie header: ${req.headers.cookie}`);
   next();
+});
+
+// Simple test endpoint to verify server is receiving requests
+app.get('/api/test', (req, res) => {
+  console.log('[TEST] Test endpoint hit!');
+  res.json({ status: 'ok', sessionId: req.sessionID, timestamp: Date.now() });
 });
 
 // --- STATIC FILE SERVING ---
