@@ -39,15 +39,23 @@ if (!mongoUri) {
     .catch(err => console.error('MongoDB connection error:', err));
 }
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json({ limit: '5mb' }));
+
+// Trust proxy - required when behind nginx/Traefik/Cloudflare
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to false since we're behind nginx proxy
+    secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
     httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' required for cross-site cookies with secure:true
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
