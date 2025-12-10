@@ -594,7 +594,7 @@ const getIntensityColor = (intensity: number): string => {
 };
 
 const PainMappingStep = forwardRef((props, ref) => {
-  const { formData, updateFormData } = useFormContext();
+  const { formData, updateFormData, formSessionId } = useFormContext();
   const [selectedPainAreaId, setSelectedPainAreaId] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<BodyView>('front');
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -631,7 +631,7 @@ const PainMappingStep = forwardRef((props, ref) => {
         body: JSON.stringify({ 
           imageData, 
           view: view,
-          formSessionId: formData.formSessionId 
+          formSessionId: formSessionId 
         }),
       });
   
