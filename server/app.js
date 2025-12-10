@@ -52,12 +52,24 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,  // Required for HTTPS
+    secure: true,
     httpOnly: true,
-    sameSite: 'lax',  // Allows cookies on same-site requests
+    sameSite: 'none',  // Required for cookies through proxy chain
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  const oldEnd = res.end;
+  res.end = function(...args) {
+    console.log(`[Request] ${req.method} ${req.path} -> ${res.statusCode}`);
+    console.log(`[Request] Cookie header: ${req.headers.cookie || 'NONE'}`);
+    console.log(`[Request] Session ID: ${req.sessionID}`);
+    return oldEnd.apply(this, args);
+  };
+  next();
+});
 
 // --- STATIC FILE SERVING ---
 // Serve files from the session-specific directories
