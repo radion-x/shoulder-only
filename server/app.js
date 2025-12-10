@@ -54,11 +54,12 @@ console.log('[Config] Session secret starts with:', sessionSecret.substring(0, 1
 app.use(session({
   secret: sessionSecret,
   resave: false,
-  saveUninitialized: true,  // Changed to true to create session immediately
+  saveUninitialized: false,
   cookie: {
-    secure: false,  // Set to false - nginx handles HTTPS termination
+    domain: '.shoulderiq.com.au',
+    secure: true,
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: 'none',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
