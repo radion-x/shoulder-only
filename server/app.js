@@ -89,12 +89,19 @@ const ensureAuthenticated = (req, res, next) => {
 };
 app.post('/api/doctor/login', (req, res) => {
   console.log('[Login] Attempt received');
-  console.log('[Login] Session ID:', req.sessionID);
+  console.log('[Login] Session ID at start:', req.sessionID);
   console.log('[Login] Cookies received:', req.headers.cookie);
   if (req.body.password === process.env.DASHBOARD_PASSWORD) {
     req.session.isAuthenticated = true;
-    console.log('[Login] Success - Session authenticated');
-    res.status(200).json({ message: 'Login successful.' });
+    req.session.save((err) => {
+      if (err) {
+        console.log('[Login] Session save error:', err);
+        return res.status(500).json({ error: 'Session save failed' });
+      }
+      console.log('[Login] Success - Session saved with ID:', req.sessionID);
+      console.log('[Login] Set-Cookie will be sent for session');
+      res.status(200).json({ message: 'Login successful.' });
+    });
   } else {
     console.log('[Login] Failed - Invalid password');
     res.status(401).json({ error: 'Invalid password.' });
