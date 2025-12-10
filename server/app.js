@@ -52,17 +52,23 @@ app.set('trust proxy', 1);
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
-  resave: false,
-  saveUninitialized: false,
-  proxy: true, // Trust the reverse proxy
+  resave: true,  // Force save session on every request
+  saveUninitialized: true,  // Save uninitialized sessions
+  proxy: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
+
+// Debug middleware to log session state on every request
+app.use((req, res, next) => {
+  console.log(`[Session Debug] ${req.method} ${req.path} - SessionID: ${req.sessionID}`);
+  next();
+});
 
 // --- STATIC FILE SERVING ---
 // Serve files from the session-specific directories
