@@ -80,14 +80,24 @@ const Assessment = require('./models/Assessment');
 
 // --- AUTHENTICATION ---
 const ensureAuthenticated = (req, res, next) => {
+  console.log('[Auth Check] Path:', req.path);
+  console.log('[Auth Check] Session ID:', req.sessionID);
+  console.log('[Auth Check] Cookies received:', req.headers.cookie);
+  console.log('[Auth Check] Session isAuthenticated:', req.session?.isAuthenticated);
   if (req.session && req.session.isAuthenticated) return next();
+  console.log('[Auth Check] DENIED - No valid session');
   res.status(401).json({ error: 'Unauthorized. Please log in.' });
 };
 app.post('/api/doctor/login', (req, res) => {
+  console.log('[Login] Attempt received');
+  console.log('[Login] Session ID:', req.sessionID);
+  console.log('[Login] Cookies received:', req.headers.cookie);
   if (req.body.password === process.env.DASHBOARD_PASSWORD) {
     req.session.isAuthenticated = true;
+    console.log('[Login] Success - Session authenticated');
     res.status(200).json({ message: 'Login successful.' });
   } else {
+    console.log('[Login] Failed - Invalid password');
     res.status(401).json({ error: 'Invalid password.' });
   }
 });
