@@ -13,8 +13,6 @@ const Mailgun = require('mailgun.js');
 const { generateComprehensivePrompt } = require('./prompt-builder.js');
 require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 
-console.log('=== SERVER CODE VERSION: 2024-12-10-v2 ===');
-
 const app = express();
 
 // --- DIRECTORY SETUP ---
@@ -41,51 +39,18 @@ if (!mongoUri) {
     .catch(err => console.error('MongoDB connection error:', err));
 }
 
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json({ limit: '5mb' }));
-
-// Trust proxy - required when behind nginx/Traefik/Cloudflare
-app.set('trust proxy', 1);
-
-const sessionSecret = process.env.SESSION_SECRET || 'fallback_secret_key_please_change';
-console.log('[Session Config] Using secret:', sessionSecret.substring(0, 10) + '...');
-
 app.use(session({
-  secret: sessionSecret,
-  resave: true,
-  saveUninitialized: true,
-  proxy: true,
-  name: 'connect.sid',  // Explicitly set cookie name
+  secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     secure: false,
     httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
-
-// Debug middleware to log session state on every request
-app.use((req, res, next) => {
-  console.log(`[Session Debug] ${req.method} ${req.path} - SessionID: ${req.sessionID}`);
-  console.log(`[Session Debug] Cookie header: ${req.headers.cookie}`);
-  // Log raw session from cookie
-  const cookieHeader = req.headers.cookie || '';
-  const sidMatch = cookieHeader.match(/connect\.sid=s%3A([^.]+)/);
-  if (sidMatch) {
-    console.log(`[Session Debug] Cookie session ID (decoded): ${sidMatch[1]}`);
-  }
-  next();
-});
-
-// Simple test endpoint to verify server is receiving requests
-app.get('/api/test', (req, res) => {
-  console.log('[TEST] Test endpoint hit!');
-  res.json({ status: 'ok', sessionId: req.sessionID, timestamp: Date.now() });
-});
 
 // --- STATIC FILE SERVING ---
 // Serve files from the session-specific directories
