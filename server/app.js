@@ -42,13 +42,17 @@ if (!mongoUri) {
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 
+// Trust the proxy for secure cookies behind Coolify/nginx
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to false since we're behind nginx proxy
+    secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
     httpOnly: true,
+    sameSite: 'lax', // Allow cookies to be sent with same-site requests
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
