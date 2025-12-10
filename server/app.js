@@ -52,11 +52,11 @@ app.set('trust proxy', 1);
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback_secret_key_please_change',
-  resave: true,  // Force save session on every request
-  saveUninitialized: true,  // Save uninitialized sessions
+  resave: true,
+  saveUninitialized: true,
   proxy: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,  // TESTING: Disable secure to debug cookie issue
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
