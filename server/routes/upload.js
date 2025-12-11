@@ -102,20 +102,50 @@ router.post('/pain-map', async (req, res) => {
       console.warn(`[Pain Map Upload] Directory sync warning: ${dirSyncErr.message}`);
     }
     
-    // Small delay to ensure Docker volume mount has propagated the write
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Wait longer and verify file is actually accessible via the same path static middleware would use
+    // This helps with Docker volume propagation delays
+    let verificationAttempts = 0;
+    const maxVerificationAttempts = 10;
+    let fileVerified = false;
+    
+    while (verificationAttempts < maxVerificationAttempts && !fileVerified) {
+      await new Promise(resolve => setTimeout(resolve, 200)); // 200ms between checks
+      verificationAttempts++;
+      
+      try {
+        // Re-check file existence and readability
+        if (fs.existsSync(finalPath)) {
+          const checkStats = fs.statSync(finalPath);
+          if (checkStats.size > 0) {
+            // Also verify we can actually read the file content
+            const testRead = fs.readFileSync(finalPath);
+            if (testRead.length > 0) {
+              fileVerified = true;
+              console.log(`[Pain Map Upload] File verified on attempt ${verificationAttempts}: ${finalPath}, Size: ${checkStats.size} bytes`);
+            }
+          }
+        }
+      } catch (verifyErr) {
+        console.warn(`[Pain Map Upload] Verification attempt ${verificationAttempts} failed: ${verifyErr.message}`);
+      }
+    }
+    
+    if (!fileVerified) {
+      console.error(`[Pain Map Upload] File could not be verified after ${maxVerificationAttempts} attempts: ${finalPath}`);
+      return res.status(500).json({ error: 'Pain map file could not be verified after upload.' });
+    }
     
     // Verify file was written and get size
     const stats = fs.statSync(finalPath);
-    console.log(`[Pain Map Upload] File saved and synced: ${finalPath}, Size: ${stats.size} bytes`);
+    console.log(`[Pain Map Upload] File saved and synced: ${finalPath}, Size: ${stats.size} bytes, Mode: ${stats.mode.toString(8)}`);
 
-    // Double-check file is readable
+    // Final verification
     const verifyExists = fs.existsSync(finalPath);
     const verifyReadable = fs.readFileSync(finalPath).length > 0;
-    console.log(`[Pain Map Upload] Verification: exists=${verifyExists}, readable=${verifyReadable}, size=${stats.size}`);
+    console.log(`[Pain Map Upload] Final verification: exists=${verifyExists}, readable=${verifyReadable}, size=${stats.size}`);
 
     if (!verifyExists || stats.size === 0) {
-      console.error(`[Pain Map Upload] Verification failed for ${finalPath}. Exists: ${verifyExists}, Size: ${stats.size}`);
+      console.error(`[Pain Map Upload] Final verification failed for ${finalPath}. Exists: ${verifyExists}, Size: ${stats.size}`);
       return res.status(500).json({ error: 'Pain map file could not be verified after upload.' });
     }
 

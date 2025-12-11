@@ -62,10 +62,11 @@ console.log('[Config] Session secret starts with:', sessionSecret.substring(0, 1
 
 app.use(session({
   secret: sessionSecret,
-  resave: false,
+  resave: true, // Changed to true to ensure session is saved on every request
   saveUninitialized: false,
   cookie: {
-    domain: '.shoulderiq.com.au',
+    // Remove domain to let browser set it automatically based on request origin
+    // domain: '.shoulderiq.com.au',
     secure: true,
     httpOnly: true,
     sameSite: 'none',
