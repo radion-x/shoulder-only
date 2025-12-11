@@ -38,6 +38,12 @@ console.log('[Env] MAILGUN_DOMAIN present:', !!process.env.MAILGUN_DOMAIN);
 console.log('[Env] EMAIL_SENDER_ADDRESS:', process.env.EMAIL_SENDER_ADDRESS || 'NOT SET');
 console.log('[Env] EMAIL_RECIPIENT_ADDRESS:', process.env.EMAIL_RECIPIENT_ADDRESS || 'NOT SET');
 
+// --- TRUST PROXY (Critical for Traefik/Coolify) ---
+if (process.env.TRUST_PROXY === 'true') {
+  app.set('trust proxy', true);
+  console.log('Trust proxy enabled for reverse proxy deployment');
+}
+
 // --- DATABASE & MIDDLEWARE ---
 const mongoUri = process.env.MONGODB_URI;
 if (!mongoUri) {
@@ -48,31 +54,63 @@ if (!mongoUri) {
     .catch(err => console.error('MongoDB connection error:', err));
 }
 
-// Trust proxy - required for secure cookies behind Cloudflare/Traefik/nginx
-app.set('trust proxy', 1);
+// --- CORS CONFIGURATION ---
+const allowedOrigins = (process.env.ALLOWED_ORIGINS)
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173'];
+
+console.log('CORS Configuration:');
+console.log('  Allowed Origins:', allowedOrigins);
+console.log('  NODE_ENV:', process.env.NODE_ENV);
 
 app.use(cors({
-  origin: true,
-  credentials: true
+  origin: function (origin, callback) {
+    console.log(`CORS request from origin: ${origin}`);
+    
+    // Allow non-browser requests (mobile apps, Postman, etc.)
+    if (!origin) {
+      console.log('  -> Allowing request with no origin header');
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log(`  -> Origin ${origin} is in allowed list - ALLOWING`);
+      callback(null, true);
+    } else if (process.env.NODE_ENV !== 'production') {
+      console.log(`  -> Non-production mode - ALLOWING ${origin}`);
+      callback(null, true);
+    } else {
+      console.warn(`  -> CORS BLOCKED: ${origin} not in allowed origins`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true // CRITICAL: Allow cookies cross-origin
 }));
 app.use(express.json({ limit: '5mb' }));
 // Log the session secret (first 10 chars only for security)
 const sessionSecret = process.env.SESSION_SECRET || 'fallback_secret_key_please_change';
 console.log('[Config] Session secret starts with:', sessionSecret.substring(0, 10), '... length:', sessionSecret.length);
 
-app.use(session({
+// --- SESSION CONFIGURATION ---
+const sessionConfig = {
   secret: sessionSecret,
-  resave: true, // Changed to true to ensure session is saved on every request
+  resave: true,
   saveUninitialized: false,
   cookie: {
-    // Remove domain to let browser set it automatically based on request origin
-    // domain: '.shoulderiq.com.au',
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000
   }
-}));
+};
+
+// Add domain only if specified (for cross-subdomain cookies)
+if (process.env.COOKIE_DOMAIN) {
+  sessionConfig.cookie.domain = process.env.COOKIE_DOMAIN;
+  console.log('Cookie domain set to:', process.env.COOKIE_DOMAIN);
+}
+
+app.use(session(sessionConfig));
 
 // Debug middleware to log all requests
 app.use((req, res, next) => {

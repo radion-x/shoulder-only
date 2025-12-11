@@ -6,10 +6,13 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        - VITE_SERVER_BASE_URL=${VITE_SERVER_BASE_URL}
     expose:
       - "80"
-    depends_on:
-      - server
+    labels:
+      - coolify.managed=true
+      - coolify.http=true
     networks:
       - coolify
 
@@ -19,9 +22,9 @@ services:
       context: ./server
       dockerfile: Dockerfile
     expose:
-      - "3889"
+      - "3000"
     environment:
-      - SERVER_PORT=3889
+      - SERVER_PORT=3000
       - MONGODB_URI=${MONGODB_URI}
       - CLAUDE_API_KEY=${CLAUDE_API_KEY}
       - MAILGUN_API_KEY=${MAILGUN_API_KEY}
@@ -32,7 +35,13 @@ services:
       - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD}
       - SESSION_SECRET=${SESSION_SECRET}
       - SERVER_BASE_URL=${SERVER_BASE_URL}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+      - TRUST_PROXY=${TRUST_PROXY}
       - NODE_ENV=production
+    labels:
+      - coolify.managed=true
+      - coolify.http=true
     volumes:
       - uploads-data:/app/public/uploads
     networks:

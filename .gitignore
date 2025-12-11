@@ -46,6 +46,7 @@ server/public/uploads/
 
 # Symlinked directories
 knee_hip
+hip_actually
 
 # Git
 .git/
