@@ -344,6 +344,9 @@ app.post('/api/upload/pain-map', async (req, res) => {
     // Write file synchronously
     fs.writeFileSync(finalPath, base64Data, 'base64');
     
+    // Set file permissions to be readable by all (0644)
+    fs.chmodSync(finalPath, 0o644);
+    
     // Force file system sync to ensure data is flushed to disk
     const fd = fs.openSync(finalPath, 'r');
     fs.fsyncSync(fd);
@@ -351,7 +354,8 @@ app.post('/api/upload/pain-map', async (req, res) => {
     
     // Verify file exists and get size
     const stats = fs.statSync(finalPath);
-    console.log(`[Pain Map Upload] File saved and synced: ${finalPath}, Size: ${stats.size} bytes`);
+    console.log(`[Pain Map Upload] File saved and synced: ${finalPath}, Size: ${stats.size} bytes, Mode: ${stats.mode.toString(8)}`);
+
 
     let relativeFilePath = path.join(sanitizedSessionId, filename);
     if (path.sep === '\\') {
