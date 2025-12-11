@@ -5,6 +5,63 @@ import { useTheme } from '../../context/ThemeContext';
 import { getApiUrl } from '../../config/api';
 // import { RedFlagsData } from '../../data/formData'; // RedFlagsData type is implicitly handled via formData
 
+// Image component with retry logic for Docker volume sync delays
+const RetryableImage: React.FC<{ src: string; alt: string; className?: string }> = ({ src, alt, className }) => {
+  const [retryCount, setRetryCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const maxRetries = 5;
+  const retryDelay = 1000; // 1 second between retries
+
+  const handleError = () => {
+    if (retryCount < maxRetries) {
+      console.log(`[RetryableImage] Retry ${retryCount + 1}/${maxRetries} for ${src}`);
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+      }, retryDelay);
+    } else {
+      console.error(`[RetryableImage] Failed to load after ${maxRetries} retries: ${src}`);
+      setHasError(true);
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoad = () => {
+    console.log(`[RetryableImage] Successfully loaded: ${src}`);
+    setIsLoading(false);
+    setHasError(false);
+  };
+
+  // Add cache-busting query param on retry
+  const imgSrc = retryCount > 0 ? `${src}?retry=${retryCount}` : src;
+
+  if (hasError) {
+    return (
+      <div className={`${className} flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400`}>
+        <span>Image unavailable</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      {isLoading && (
+        <div className={`${className} flex items-center justify-center bg-gray-100 dark:bg-gray-700`}>
+          <span className="animate-pulse text-gray-500">Loading image...</span>
+        </div>
+      )}
+      <img 
+        key={retryCount}
+        src={imgSrc} 
+        alt={alt} 
+        className={`${className} ${isLoading ? 'hidden' : ''}`}
+        onError={handleError}
+        onLoad={handleLoad}
+      />
+    </div>
+  );
+};
+
 const SummaryStep: React.FC = () => {
   const {
     formData,
@@ -498,13 +555,13 @@ const SummaryStep: React.FC = () => {
                 {formData.painMapImageFront && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Front View</h4>
-                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
+                    <RetryableImage src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageFront}`} alt="Pain Map Front" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
                 {formData.painMapImageBack && (
                   <div className="text-center">
                     <h4 className="font-semibold mb-2">Back View</h4>
-                    <img src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
+                    <RetryableImage src={`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${formData.painMapImageBack}`} alt="Pain Map Back" className="max-w-xs rounded-lg shadow-md" />
                   </div>
                 )}
               </div>
