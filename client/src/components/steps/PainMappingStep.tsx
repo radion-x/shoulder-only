@@ -600,8 +600,12 @@ const PainMappingStep = forwardRef((props, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const painMapContainerRef = useRef<HTMLDivElement>(null);
 
-  const waitForViewRender = async () => {
-    await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 200)));
+  const waitForViewRender = async (viewName: string) => {
+    console.log(`[Pain Map] Waiting for ${viewName} view to render...`);
+    // Wait for React state update + DOM repaint + image load
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 300)));
+    console.log(`[Pain Map] ${viewName} view should be ready now`);
   };
 
   const verifyUploadAvailability = async (relativePath: string): Promise<boolean> => {
@@ -625,35 +629,55 @@ const PainMappingStep = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     captureBothViews: async () => {
       try {
+        console.log('[Pain Map] Starting capture of both views...');
+        
+        // Capture front view
         setCurrentView('front');
-        await waitForViewRender();
+        await waitForViewRender('front');
+        console.log('[Pain Map] Capturing front view...');
         await handleCapturePainMap('front');
+        console.log('[Pain Map] Front view captured successfully');
 
+        // Capture back view
         setCurrentView('back');
-        await waitForViewRender();
+        await waitForViewRender('back');
+        console.log('[Pain Map] Capturing back view...');
         await handleCapturePainMap('back');
+        console.log('[Pain Map] Back view captured successfully');
+        
+        console.log('[Pain Map] Both views captured!');
       } catch (error) {
-        console.error('Pain map capture failed:', error);
+        console.error('[Pain Map] Capture failed:', error);
         throw error;
       }
     }
   }));
 
   const handleCapturePainMap = async (view: BodyView): Promise<string> => {
+    console.log(`[Pain Map] handleCapturePainMap called for view: ${view}`);
+    
     if (!painMapContainerRef.current) {
+      console.error(`[Pain Map] Container ref is null for ${view}`);
       throw new Error('Pain map container is not ready.');
     }
     if (!formSessionId) {
+      console.error(`[Pain Map] No formSessionId for ${view}`);
       throw new Error('Missing form session ID for pain map upload.');
     }
 
     try {
+      console.log(`[Pain Map] Running html2canvas for ${view}...`);
       const canvas = await html2canvas(painMapContainerRef.current, {
         useCORS: true,
-        background: undefined,
+        backgroundColor: '#ffffff',
+        logging: false,
       });
+      console.log(`[Pain Map] Canvas created for ${view}, size: ${canvas.width}x${canvas.height}`);
+      
       const imageData = canvas.toDataURL('image/png');
+      console.log(`[Pain Map] Image data length for ${view}: ${imageData.length}`);
 
+      console.log(`[Pain Map] Uploading ${view} to server...`);
       const response = await fetch(getApiUrl('/api/upload/pain-map'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -665,10 +689,13 @@ const PainMappingStep = forwardRef((props, ref) => {
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[Pain Map] Upload failed for ${view}: ${response.status} - ${errorText}`);
         throw new Error(`Failed to upload ${view} pain map image.`);
       }
 
       const { filePath } = await response.json();
+      console.log(`[Pain Map] ${view} uploaded successfully: ${filePath}`);
 
       if (view === 'front') {
         updateFormData({ painMapImageFront: filePath });
@@ -676,13 +703,9 @@ const PainMappingStep = forwardRef((props, ref) => {
         updateFormData({ painMapImageBack: filePath });
       }
 
-      // Skip availability check - server confirmed file was saved
-      // The 404s are due to nginx proxy timing, not missing files
-      console.log(`Pain map ${view} uploaded successfully: ${filePath}`);
-
       return filePath;
     } catch (error) {
-      console.error(`Error capturing or uploading ${view} pain map:`, error);
+      console.error(`[Pain Map] Error capturing or uploading ${view}:`, error);
       throw error;
     }
   };
