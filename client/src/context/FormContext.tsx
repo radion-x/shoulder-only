@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useRef } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useRef, useEffect } from 'react';
 import { FormData, initialFormData } from '../data/formData';
 
 interface FormContextType {
@@ -57,6 +57,14 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
   const [contextIsInitialProcessingComplete, setContextIsInitialProcessingComplete] = useState<boolean>(false);
   const [isSubmissionSuccessful, setIsSubmissionSuccessful] = useState<boolean>(false);
   const totalSteps = 7;
+
+  // Sync formSessionId into formData on mount to ensure consistency
+  useEffect(() => {
+    setFormData(prevData => ({
+      ...prevData,
+      formSessionId: formSessionId
+    }));
+  }, [formSessionId]);
 
   const updateFormData = (stepData: Partial<FormData>) => {
     setFormData(prevData => ({
