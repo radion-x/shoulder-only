@@ -561,24 +561,47 @@ app.post('/api/email/send-assessment', async (req, res) => {
     const attachments = [];
     const inlineImages = [];
     
+    // Helper function to wait for file with retries (handles Docker volume sync delays)
+    const waitForFile = async (filePath, maxRetries = 5, delayMs = 500) => {
+      for (let i = 0; i < maxRetries; i++) {
+        if (fs.existsSync(filePath)) {
+          const stats = fs.statSync(filePath);
+          if (stats.size > 0) {
+            console.log(`[Email Attachments] File ready: ${filePath} (${stats.size} bytes)`);
+            return true;
+          }
+        }
+        console.log(`[Email Attachments] Waiting for file (attempt ${i + 1}/${maxRetries}): ${filePath}`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+      console.warn(`[Email Attachments] File not found after ${maxRetries} attempts: ${filePath}`);
+      return false;
+    };
+    
     if (formData.painMapImageFront) {
       const frontImagePath = path.join(baseAssessmentFilesDir, formData.painMapImageFront);
-      if (fs.existsSync(frontImagePath)) {
+      console.log(`[Email Attachments] Looking for front image: ${frontImagePath}`);
+      if (await waitForFile(frontImagePath)) {
         const fileData = fs.readFileSync(frontImagePath);
         inlineImages.push({
           filename: 'painMapFront.png',
-          data: fileData
+          data: fileData,
+          cid: 'painMapFront' // Must match src="cid:painMapFront" in HTML
         });
+        console.log(`[Email Attachments] Front image attached (${fileData.length} bytes)`);
       }
     }
     if (formData.painMapImageBack) {
       const backImagePath = path.join(baseAssessmentFilesDir, formData.painMapImageBack);
-      if (fs.existsSync(backImagePath)) {
+      console.log(`[Email Attachments] Looking for back image: ${backImagePath}`);
+      if (await waitForFile(backImagePath)) {
         const fileData = fs.readFileSync(backImagePath);
         inlineImages.push({
           filename: 'painMapBack.png',
-          data: fileData
+          data: fileData,
+          cid: 'painMapBack' // Must match src="cid:painMapBack" in HTML
         });
+        console.log(`[Email Attachments] Back image attached (${fileData.length} bytes)`);
       }
     }
 
