@@ -52,6 +52,7 @@ const AboutYouStep: React.FC = () => {
       const response = await fetch(getApiUrl(`/api/upload/referral?formSessionId=${formSessionId}`), {
         method: 'POST',
         body: uploadFormData,
+        credentials: 'include',
       });
 
       if (!response.ok) {

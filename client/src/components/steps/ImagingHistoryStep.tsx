@@ -56,6 +56,7 @@ const ImagingHistoryStep: React.FC = () => {
       const response = await fetch(getApiUrl(`/api/upload/imaging-file?formSessionId=${encodeURIComponent(formSessionId)}`), {
         method: 'POST',
         body: payload,
+        credentials: 'include',
         // Headers are not typically needed for FormData with fetch, browser sets Content-Type
       });
 

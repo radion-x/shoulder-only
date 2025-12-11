@@ -245,6 +245,7 @@ const SummaryStep: React.FC = () => {
       const saveResponse = await fetch(getApiUrl('/api/assessment'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(assessmentToSave),
       });
       const saveData = await saveResponse.json();
@@ -265,6 +266,7 @@ const SummaryStep: React.FC = () => {
       const emailResponse = await fetch(getApiUrl('/api/email/send-assessment'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(emailPayload),
       });
       const emailData = await emailResponse.json();
@@ -320,6 +322,7 @@ const SummaryStep: React.FC = () => {
         const response = await fetch(getApiUrl('/api/generate-summary-stream'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify(cleanFormDataForSummary),
         });
 

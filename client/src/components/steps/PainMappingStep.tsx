@@ -681,6 +681,7 @@ const PainMappingStep = forwardRef((props, ref) => {
       const response = await fetch(getApiUrl('/api/upload/pain-map'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           imageData,
           view: view,
