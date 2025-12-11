@@ -79,6 +79,9 @@ const FormStepper: React.FC = () => {
                   await painMappingStepRef.current.captureBothViews();
                 }
                 goToNextStep();
+              } catch (error) {
+                console.error('Error during pain map capture:', error);
+                alert('Could not capture your pain map. Please try again before continuing.');
               } finally {
                 // Ensure navigation is unlocked even if errors occur
                 setIsNavigating(false);

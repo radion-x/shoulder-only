@@ -600,56 +600,91 @@ const PainMappingStep = forwardRef((props, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const painMapContainerRef = useRef<HTMLDivElement>(null);
 
+  const waitForViewRender = async () => {
+    await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 200)));
+  };
+
+  const verifyUploadAvailability = async (relativePath: string): Promise<boolean> => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/uploads/assessment_files/${relativePath}`, {
+        method: 'HEAD',
+        signal: controller.signal,
+      });
+      return res.ok;
+    } catch (err) {
+      console.warn('Pain map availability check failed:', err);
+      return false;
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
+
 
   useImperativeHandle(ref, () => ({
     captureBothViews: async () => {
-      // Capture the front view
-      setCurrentView('front');
-      await new Promise(resolve => setTimeout(resolve, 100)); // Allow view to render
-      await handleCapturePainMap('front');
+      try {
+        setCurrentView('front');
+        await waitForViewRender();
+        await handleCapturePainMap('front');
 
-      // Capture the back view
-      setCurrentView('back');
-      await new Promise(resolve => setTimeout(resolve, 100)); // Allow view to render
-      await handleCapturePainMap('back');
+        setCurrentView('back');
+        await waitForViewRender();
+        await handleCapturePainMap('back');
+      } catch (error) {
+        console.error('Pain map capture failed:', error);
+        throw error;
+      }
     }
   }));
 
-  const handleCapturePainMap = async (view: BodyView) => {
-    if (!painMapContainerRef.current) return;
-  
+  const handleCapturePainMap = async (view: BodyView): Promise<string> => {
+    if (!painMapContainerRef.current) {
+      throw new Error('Pain map container is not ready.');
+    }
+    if (!formSessionId) {
+      throw new Error('Missing form session ID for pain map upload.');
+    }
+
     try {
       const canvas = await html2canvas(painMapContainerRef.current, {
         useCORS: true,
-        background: undefined, 
+        background: undefined,
       });
       const imageData = canvas.toDataURL('image/png');
-  
+
       const response = await fetch(getApiUrl('/api/upload/pain-map'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          imageData, 
+        body: JSON.stringify({
+          imageData,
           view: view,
-          formSessionId: formSessionId 
+          formSessionId: formSessionId
         }),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Failed to upload pain map image.');
+        throw new Error(`Failed to upload ${view} pain map image.`);
       }
-  
+
       const { filePath } = await response.json();
-  
-      // Update form context with the new file path
+
       if (view === 'front') {
         updateFormData({ painMapImageFront: filePath });
       } else {
         updateFormData({ painMapImageBack: filePath });
       }
-  
+
+      const isAvailable = await verifyUploadAvailability(filePath);
+      if (!isAvailable) {
+        throw new Error(`Uploaded ${view} pain map is not accessible yet (404). Please retry.`);
+      }
+
+      return filePath;
     } catch (error) {
-      console.error('Error capturing or uploading pain map:', error);
+      console.error(`Error capturing or uploading ${view} pain map:`, error);
+      throw error;
     }
   };
 

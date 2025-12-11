@@ -74,6 +74,8 @@ router.post('/pain-map', async (req, res) => {
 
     console.log(`[Pain Map Upload] Session: ${sanitizedSessionId}, View: ${view}`);
     console.log(`[Pain Map Upload] Directory: ${finalSessionDir}`);
+    console.log(`[Pain Map Upload] Base assessment dir: ${baseAssessmentFilesDir}`);
+    console.log(`[Pain Map Upload] SERVER_BASE_URL: ${process.env.SERVER_BASE_URL || 'NOT SET'}`);
 
     if (!fs.existsSync(finalSessionDir)) {
       fs.mkdirSync(finalSessionDir, { recursive: true });
@@ -94,6 +96,11 @@ router.post('/pain-map', async (req, res) => {
     // Verify file was written and get size
     const stats = fs.statSync(finalPath);
     console.log(`[Pain Map Upload] File saved and synced: ${finalPath}, Size: ${stats.size} bytes`);
+
+    if (!fs.existsSync(finalPath) || stats.size === 0) {
+      console.error(`[Pain Map Upload] Verification failed for ${finalPath}. Exists: ${fs.existsSync(finalPath)}, Size: ${stats.size}`);
+      return res.status(500).json({ error: 'Pain map file could not be verified after upload.' });
+    }
 
     let relativeFilePath = path.join(sanitizedSessionId, filename);
     if (path.sep === '\\') {

@@ -29,6 +29,15 @@ const tempUploadDir = path.join(baseUploadsDir, 'temp'); // Temporary directory 
 
 const port = process.env.SERVER_PORT || 3001;
 
+// Log critical environment values (masked) to verify deployment configuration
+console.log('[Env] SERVER_PORT:', port);
+console.log('[Env] SERVER_BASE_URL:', process.env.SERVER_BASE_URL || 'NOT SET');
+console.log('[Env] MONGODB_URI present:', !!process.env.MONGODB_URI);
+console.log('[Env] MAILGUN_API_KEY present:', !!process.env.MAILGUN_API_KEY);
+console.log('[Env] MAILGUN_DOMAIN present:', !!process.env.MAILGUN_DOMAIN);
+console.log('[Env] EMAIL_SENDER_ADDRESS:', process.env.EMAIL_SENDER_ADDRESS || 'NOT SET');
+console.log('[Env] EMAIL_RECIPIENT_ADDRESS:', process.env.EMAIL_RECIPIENT_ADDRESS || 'NOT SET');
+
 // --- DATABASE & MIDDLEWARE ---
 const mongoUri = process.env.MONGODB_URI;
 if (!mongoUri) {
@@ -78,6 +87,21 @@ app.use((req, res, next) => {
 
 // --- STATIC FILE SERVING ---
 // Serve files from the session-specific directories
+app.use('/uploads/assessment_files', (req, res, next) => {
+  const requestedPath = path.join(baseAssessmentFilesDir, decodeURIComponent(req.path));
+  const exists = fs.existsSync(requestedPath);
+  let size = 'N/A';
+  try {
+    if (exists) {
+      const stats = fs.statSync(requestedPath);
+      size = stats.size;
+    }
+  } catch (err) {
+    console.warn('[Uploads Debug] Stat error for', requestedPath, err.message);
+  }
+  console.log('[Uploads Debug] GET', req.originalUrl, '-> exists:', exists, 'size:', size);
+  next();
+});
 app.use('/uploads/assessment_files', express.static(baseAssessmentFilesDir));
 
 
