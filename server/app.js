@@ -412,7 +412,7 @@ app.post('/api/upload/referral', upload.single('referralFile'), (req, res) => {
         id: req.file.filename.split('.')[0],
         filename: req.file.filename,
         originalName: req.file.originalname,
-        url: `${process.env.SERVER_BASE_URL}/uploads/assessment_files/${relativeFilePath}`,
+        filePath: relativeFilePath,  // Store relative path only, not full URL
         uploadDate: new Date()
       };
 
@@ -748,7 +748,7 @@ function generateAssessmentEmailHTML(data, serverBaseUrl, recipientType) {
               <p><span class="field-label">Fax:</span> <span class="field-value">${formData.demographics.referringDoctor.fax || 'N/A'}</span></p>
               ${formData.demographics.referringDoctor.referralDocument ? `
                 <p><span class="field-label">Referral Document:</span> <span class="field-value">
-                  <a href="${formData.demographics.referringDoctor.referralDocument.url}" target="_blank" style="color: #007bff; text-decoration: none;">
+                  <a href="${serverBaseUrl}/uploads/assessment_files/${formData.demographics.referringDoctor.referralDocument.filePath || formData.demographics.referringDoctor.referralDocument.url?.split('/assessment_files/')[1] || ''}" target="_blank" style="color: #007bff; text-decoration: none;">
                     📄 ${formData.demographics.referringDoctor.referralDocument.originalName}
                   </a>
                 </span></p>
